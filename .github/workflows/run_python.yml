@@ -1,0 +1,30 @@
+name: Run Python Script Every 5 Minutes
+
+on:
+  push:
+    branches: [ "main" ]
+  schedule:
+    # این خط اسکریپت را هر 5 دقیقه یکبار اجرا می‌کند
+    - cron: '*/5 * * * *'
+  workflow_dispatch: # برای اینکه بتوانید دستی هم تست کنید
+
+jobs:
+  run-on-linux:
+    # استفاده از آخرین نسخه لینوکس اوبونتو
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Run my script
+        run: python script.py
