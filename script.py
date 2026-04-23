@@ -16,19 +16,23 @@
 
 # asyncio.run(send_personal_message())
 
+import requests
 
-import yt_dlp
+# آیدی افزونه
+extension_id = "cclelndahbckbenkjhflpdbgdldlbecc"
 
-url = 'https://www.youtube.com/watch?v=OCGGoT23kh4'
+# لینک رسمی دانلود فایل CRX از سرور گوگل
+url = f"https://clients2.google.com/service/update2/crx?response=redirect&prodversion=114.0.5735.199&x=id%3D{extension_id}%26installsource%3Dondemand%26uc"
 
-# تنظیمات برای دانلود (می‌توانی تنظیمات بیشتری هم اضافه کنی)
-ydl_opts = {
-    'format': 'best',  # بهترین کیفیت موجود را انتخاب می‌کند
-}
+# مسیر ذخیره فایل روی سیستم
+output_file = f"{extension_id}.crx"
 
-try:
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        ydl.download([url])
-    print("دانلود با موفقیت انجام شد! 🎉")
-except Exception as e:
-    print(f"متأسفانه خطایی رخ داد: {e}")
+# دانلود فایل
+resp = requests.get(url, allow_redirects=True)
+
+if resp.status_code == 200:
+    with open(output_file, "wb") as f:
+        f.write(resp.content)
+    print(f"✅ اکستنشن با موفقیت دانلود شد: {output_file}")
+else:
+    print(f"❌ خطا در دانلود (کد وضعیت: {resp.status_code})")
