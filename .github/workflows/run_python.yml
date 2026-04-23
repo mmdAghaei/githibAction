@@ -3,9 +3,9 @@ name: Run Python Script Every 5 Minutes
 on:
   push:
     branches: [ "main" ]
-  schedule:
-    # این خط اسکریپت را هر 5 دقیقه یکبار اجرا می‌کند
-    - cron: '*/59 * * * *'
+  # schedule:
+  #   # این خط اسکریپت را هر 5 دقیقه یکبار اجرا می‌کند
+  #   - cron: '*/59 * * * *'
   workflow_dispatch: # برای اینکه بتوانید دستی هم تست کنید
 
 jobs:
