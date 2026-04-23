@@ -16,5 +16,19 @@
 
 # asyncio.run(send_personal_message())
 
-from pytube import YouTube
-YouTube('https://www.youtube.com/watch?v=OCGGoT23kh4').streams.first().download()
+
+import yt_dlp
+
+url = 'https://www.youtube.com/watch?v=OCGGoT23kh4'
+
+# تنظیمات برای دانلود (می‌توانی تنظیمات بیشتری هم اضافه کنی)
+ydl_opts = {
+    'format': 'best',  # بهترین کیفیت موجود را انتخاب می‌کند
+}
+
+try:
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        ydl.download([url])
+    print("دانلود با موفقیت انجام شد! 🎉")
+except Exception as e:
+    print(f"متأسفانه خطایی رخ داد: {e}")
