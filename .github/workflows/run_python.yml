@@ -25,6 +25,7 @@ jobs:
       - name: Install dependencies
         run: |
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          python -m pip install git+https://github.com/pytube/pytube
 
       - name: Run my script
         run: python script.py
