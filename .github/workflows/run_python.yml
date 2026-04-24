@@ -22,6 +22,7 @@ jobs:
         run: |
           npm install
           node index.js
+          node s.js
 
       - name: Upload extension artifact
         uses: actions/upload-artifact@v4 # استفاده از نسخه جدیدتر برای سرعت و پایداری بیشتر
