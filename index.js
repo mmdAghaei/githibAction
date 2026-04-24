@@ -3,8 +3,6 @@ const FormData = require('form-data');
 const fs = require('fs');
 const path = require('path');
 
-const path = require('path');
-
 // چون کتابخانه chrome-extension-fetch احتمالاً فقط از import پشتیبانی می‌کند،
 // باید از این روش برای استفاده در محیط require استفاده کنیم:
 async function main() {
