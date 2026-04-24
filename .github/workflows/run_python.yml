@@ -24,7 +24,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm install chrome-extension-fetch
+          npm i
+          node index.js
 
           
 
