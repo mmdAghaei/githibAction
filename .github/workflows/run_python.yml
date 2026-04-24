@@ -24,9 +24,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-
-          pip install spotdl
-          python -m spotdl [https://open.spotify.com/album/712frwffCVmPzDfXYLNZcv]
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           
 
       - name: Run my script
