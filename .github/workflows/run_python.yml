@@ -8,6 +8,8 @@ on:
   #   - cron: '*/59 * * * *'
   workflow_dispatch: # برای اینکه بتوانید دستی هم تست کنید
 
+
+
 jobs:
   run-on-linux:
     # استفاده از آخرین نسخه لینوکس اوبونتو
@@ -27,7 +29,15 @@ jobs:
           npm i
           node index.js
 
-          
+      - name: Upload extension artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: get-cookiestxt-locally
+          path: extensions/get-cookiestxt-locally.crx
+          # یا اگر می‌خواهید پوشه کامل را آپلود کنید:
+          # path: extensions/
+
 
       - name: Run my script
         run: node index.js
+      
