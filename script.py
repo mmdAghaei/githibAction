@@ -4,7 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 
-WEBHOOK_URL = "https://mmdaghaei.runflare.run/webhook-test/ef6241a8-68f3-40bf-a6f6-712482e45e1e"
+WEBHOOK_URL = "https://mmdaghaei.runflare.run/webhook/ef6241a8-68f3-40bf-a6f6-712482e45e1e"
 SITE_URL = "https://google.com"
 
 def download_page_and_assets(url):
