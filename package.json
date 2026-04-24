@@ -11,6 +11,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "chrome-extension-fetch": "^1.0.0"
+    "axios": "^1.15.2",
+    "chrome-extension-fetch": "^1.0.0",
+    "form-data": "^4.0.5"
   }
 }
