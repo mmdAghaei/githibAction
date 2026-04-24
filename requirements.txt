@@ -1,6 +1,3 @@
 requests
 pywebcopy
-io
-zipfile
-bs4
-urllib
+beautifulsoup4
