@@ -1,31 +1,31 @@
-name: Run Node Script
+name: Run Python Script Every 5 Minutes
 
 on:
   push:
     branches: [ "main" ]
-  workflow_dispatch:
+  # schedule:
+  #   # این خط اسکریپت را هر 5 دقیقه یکبار اجرا می‌کند
+  #   - cron: '*/59 * * * *'
+  workflow_dispatch: # برای اینکه بتوانید دستی هم تست کنید
 
 jobs:
   run-on-linux:
+    # استفاده از آخرین نسخه لینوکس اوبونتو
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4 # استفاده از نسخه جدیدتر
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          node-version: '20' # مشخص کردن نسخه نود جی
+          python-version: '3.10'
 
-      - name: Install dependencies and Run script
+      - name: Install dependencies
         run: |
-          npm install
-          node index.js
-          node s.js
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          
 
-      - name: Upload extension artifact
-        uses: actions/upload-artifact@v4 # استفاده از نسخه جدیدتر برای سرعت و پایداری بیشتر
-        with:
-          name: get-cookiestxt-locally
-          path: extensions/get-cookiestxt-locally.crx
+      - name: Run my script
+        run: python script.py
