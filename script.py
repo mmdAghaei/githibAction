@@ -1,16 +1,16 @@
 import requests
+import time
 
 url = "https://jitsi.pashmak.net/"
 
-payload = b'a' * (1024 * 1024)  # 1MB
+url = "http://your-server-ip-or-domain/api"
+payload = b'a' * (1024 * 1024)
 
-headers = {
-    "Content-Type": "application/octet-stream"
-}
+def send_packet(n):
+    start = time.time()
+    r = requests.post(url, data=payload)
+    end = time.time()
+    print(f"Packet {n} | Status: {r.status_code} | RTT: {(end - start)*1000:.2f} ms")
 
-print("hello")
-
-# for i in range(1000):
-#     r1 = requests.post(url, data=payload, headers=headers)
-#     print("Request 1:", r1.status_code)
-    
+for i in range(10):
+    send_packet(i)
