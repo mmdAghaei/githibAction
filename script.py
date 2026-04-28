@@ -10,5 +10,5 @@ def send_packet(n):
     end = time.time()
     print(f"Packet {n} | Status: {r.status_code} | RTT: {(end - start)*1000:.2f} ms")
 
-for i in range(10):
+for i in range(10000):
     send_packet(i)
