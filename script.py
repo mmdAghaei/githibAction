@@ -68,7 +68,7 @@ class BandwidthFlooder:
 
 def main():
     parser = argparse.ArgumentParser(description="WiFi Bandwidth Flood Tester")
-    parser.add_argument("85.198.11.66:1935", help="Target IP address")
+    parser.add_argument("target_ip", help="Target IP address")
     parser.add_argument("-p", "--port", type=int, default=80, help="Target port (default: 80)")
     parser.add_argument("-d", "--duration", type=int, default=30, help="Test duration in seconds (default: 30)")
     parser.add_argument("-s", "--size", type=int, default=1024, help="Packet size in bytes (default: 1024)")
