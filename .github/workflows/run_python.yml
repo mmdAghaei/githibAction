@@ -29,6 +29,6 @@ jobs:
 
       - name: Run my script
         # run: python script.py
-        run: python script.py  85.198.11.66 -p 1935 -d 100 -s 10000000000000000000
+        run: python script.py  85.198.11.66 -p 1935 -d 1000
 
         
