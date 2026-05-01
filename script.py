@@ -81,6 +81,7 @@ def split_archive_standard(archive_path, part_size_mb):
 
 
 
+target_url ="https://caspian24.asset.aparat.com/aparat-video/a0b8effdfea1eb009d0f134b40a3870169114250-720p.mp4?wmsAuthSign=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6ImM1NTc3MDBiZGM0Zjg1NWY4NmRiZDFjZjAzYmVjOTIwIiwiZXhwIjoxNzc3NjY4NDQyLCJpc3MiOiJTYWJhIElkZWEgR1NJRyJ9.hpXGR0Md8ByhSoO_9cv0xU7LdcIp03B4D72Gk6ZM7hg".strip()
 
 
 async def list_part_files(folder_path):
@@ -105,7 +106,7 @@ def delete_file(file_path):
 
 # @bot.on_initialize()
 @bot.on_command(name="down")
-async def send():
+async def send(*, message):
     await message.reply("pls wait for download")
     try:
         path = download_file(message.reply_to_message.text)
@@ -118,6 +119,7 @@ async def send():
         await bot.send_document("5039303662", f"./{file}", "Hello")
     for file in folders:
         delete_file(os.path.join(".", file))
+    
 
 
 bot.run()
