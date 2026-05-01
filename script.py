@@ -81,7 +81,7 @@ def split_archive_standard(archive_path, part_size_mb):
 
 
 
-target_url ="https://caspian24.asset.aparat.com/aparat-video/a0b8effdfea1eb009d0f134b40a3870169114250-720p.mp4?wmsAuthSign=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6ImM1NTc3MDBiZGM0Zjg1NWY4NmRiZDFjZjAzYmVjOTIwIiwiZXhwIjoxNzc3NjY4NDQyLCJpc3MiOiJTYWJhIElkZWEgR1NJRyJ9.hpXGR0Md8ByhSoO_9cv0xU7LdcIp03B4D72Gk6ZM7hg".strip()
+target_url ="https://github.com/KRTirtho/spotube/releases/download/v5.1.1/Spotube-windows-x86_64-setup.exe".strip()
 
 try:
     path = download_file(target_url)
