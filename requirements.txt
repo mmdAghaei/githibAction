@@ -1,1 +1,5 @@
 numpy
+requests
+py7zr
+balethon
+asyncio
