@@ -81,13 +81,7 @@ def split_archive_standard(archive_path, part_size_mb):
 
 
 
-target_url ="https://github.com/microsoft/WSL/releases/download/2.6.3/wsl.2.6.3.0.arm64.msi".strip()
 
-try:
-    path = download_file(target_url)
-    create_standard_split_archive(path)
-except Exception as e:
-    print(f"❌ خطا: {e}")
 
 async def list_part_files(folder_path):
     files = os.listdir(folder_path)
@@ -101,13 +95,29 @@ async def list_part_files(folder_path):
 
     return part_files
 
+def delete_file(file_path):
+    try:
+        os.remove(file_path)
+        print(f"فایل با موفقیت پاک شد: {file_path}")
+    except OSError as e:
+        print(f"خطا در پاک کردن فایل {file_path}: {e}")
 
-@bot.on_initialize()
+
+# @bot.on_initialize()
+@bot.on_command(name="down")
 async def send():
+    await message.reply("pls wait for download")
+    try:
+        path = download_file(message.reply_to_message.text)
+        create_standard_split_archive(path)
+    except Exception as e:
+        print(f"❌ خطا: {e}")
+    await message.reply("Sending...")
     folders = await list_part_files(".")
     for file in folders:
-
-        await bot.send_document("4402961702", f"./{file}", "Hello")
+        await bot.send_document("5039303662", f"./{file}", "Hello")
+    for file in folders:
+        delete_file(os.path.join(".", file))
 
 
 bot.run()
