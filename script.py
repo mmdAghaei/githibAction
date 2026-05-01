@@ -116,7 +116,7 @@ async def send(*, message):
     await message.reply("Sending...")
     folders = await list_part_files(".")
     for file in folders:
-        await bot.send_document("5039303662", f"./{file}", "Hello")
+        await bot.send_document("4402961702", f"./{file}", "Hello")
     for file in folders:
         delete_file(os.path.join(".", file))
     
