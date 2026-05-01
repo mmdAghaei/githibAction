@@ -81,7 +81,7 @@ def split_archive_standard(archive_path, part_size_mb):
 
 
 
-target_url ="https://github.com/KRTirtho/spotube/releases/download/v5.1.1/Spotube-windows-x86_64-setup.exe".strip()
+target_url ="https://github.com/microsoft/WSL/releases/download/2.6.3/wsl.2.6.3.0.arm64.msi".strip()
 
 try:
     path = download_file(target_url)
