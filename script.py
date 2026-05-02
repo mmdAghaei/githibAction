@@ -109,7 +109,7 @@ def delete_file(file_path):
 async def send(*, message):
     await message.reply("pls wait for download")
     try:
-        path = download_file(message.reply_to_message.text)
+        path = download_file("https://github.com/2dust/v2rayN/releases/download/7.20.4/v2rayN-windows-64.zip")
         create_standard_split_archive(path)
     except Exception as e:
         print(f"❌ خطا: {e}")
