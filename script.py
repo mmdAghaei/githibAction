@@ -132,6 +132,7 @@ async def send(*, message):
 
 
 
+
 def take_screenshot(url, output_filename="screenshot.png"):
     with sync_playwright() as p:
         # راه‌اندازی مرورگر کرومیوم
@@ -151,6 +152,7 @@ def take_screenshot(url, output_filename="screenshot.png"):
             print("در حال گرفتن اسکرین‌شات...")
             page.wait_for_timeout(2000)
             page.screenshot(path=output_filename, full_page=True)
+            shutil.make_archive("screen", 'zip', "./screenshot.png")
             print(f"اسکرین‌شات با موفقیت ذخیره شد: {output_filename}")
             
         except Exception as e:
@@ -170,8 +172,10 @@ async def send(*, message):
     except Exception as e:
         print(f"❌ خطا: {e}")
     await message.reply("Sending...")
-    await bot.send_document("4402961702", f"./screenshot.png", "screenshot")
-    delete_file(os.path.join(".", "screenshot.png"))
+    await bot.send_document("4402961702", "./screen.zip", "screenshot")
+    await bot.send_photo("4402961702", "./screenshot.png", "screenshot")
+
+    delete_file(os.path.join(".", "screen.zip"))
 
 
 def download_website(url, download_folder):
@@ -208,7 +212,7 @@ async def send(*, message):
 
 @bot.on_initialize()
 async def send():
-    await bot.send_message("5039303662", "Hello bitcheesssssss")
+    await bot.send_message("4402961702", "Hello bitcheesssssss")
     
 
 bot.run()
