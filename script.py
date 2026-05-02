@@ -1,9 +1,15 @@
 import requests
+from pywebcopy import save_webpage
+import shutil
 import os
 import py7zr
 from balethon import Client
 from balethon.conditions import private
 import asyncio
+import time
+
+from playwright.sync_api import sync_playwright
+
 bot = Client("1105125913:lDJUbNyc7yMR5TT6ccCGwf_xEyJgLoF73BU")
 
 def download_file(url, dest_folder="."):
@@ -81,8 +87,6 @@ def split_archive_standard(archive_path, part_size_mb):
 
 
 
-target_url ="https://caspian24.asset.aparat.com/aparat-video/a0b8effdfea1eb009d0f134b40a3870169114250-720p.mp4?wmsAuthSign=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6ImM1NTc3MDBiZGM0Zjg1NWY4NmRiZDFjZjAzYmVjOTIwIiwiZXhwIjoxNzc3NjY4NDQyLCJpc3MiOiJTYWJhIElkZWEgR1NJRyJ9.hpXGR0Md8ByhSoO_9cv0xU7LdcIp03B4D72Gk6ZM7hg".strip()
-
 
 async def list_part_files(folder_path):
     files = os.listdir(folder_path)
@@ -104,12 +108,11 @@ def delete_file(file_path):
         print(f"خطا در پاک کردن فایل {file_path}: {e}")
 
 
-# @bot.on_initialize()
-@bot.on_command(name="down")
+@bot.on_command(name="downloadFile")
 async def send(*, message):
-    await message.reply("pls wait for download")
+    await message.reply("Hi asshole\nWait or I'll kick ur ass,OK?")
     try:
-        path = download_file("https://github.com/2dust/v2rayN/releases/download/7.20.4/v2rayN-windows-64.zip")
+        path = download_file(message.reply_to_message.text)
         create_standard_split_archive(path)
     except Exception as e:
         print(f"❌ خطا: {e}")
@@ -121,5 +124,91 @@ async def send(*, message):
         delete_file(os.path.join(".", file))
     
 
+
+
+
+
+
+
+
+
+def take_screenshot(url, output_filename="screenshot.png"):
+    with sync_playwright() as p:
+        # راه‌اندازی مرورگر کرومیوم
+        browser = p.chromium.launch(headless=True) # headless=True یعنی مرورگر در پس‌زمینه باز شود
+        page = browser.new_page()
+        
+        # تنظیم اندازه صفحه (اختیاری - برای داشتن اسکرین‌شات کامل)
+        page.set_viewport_size({"width": 1920, "height": 1080})
+        
+        try:
+            print(f"در حال باز کردن: {url}...")
+            # رفتن به سایت
+            
+            page.goto(url, wait_until="networkidle") # صبر می‌کند تا شبکه آرام شود (صفحه کامل لود شود)
+            
+            # گرفتن اسکرین‌شات
+            print("در حال گرفتن اسکرین‌شات...")
+            page.wait_for_timeout(2000)
+            page.screenshot(path=output_filename, full_page=True)
+            print(f"اسکرین‌شات با موفقیت ذخیره شد: {output_filename}")
+            
+        except Exception as e:
+            print(f"خطایی رخ داد: {e}")
+            
+        finally:
+            browser.close()
+
+
+
+
+@bot.on_command(name="takeScreen")
+async def send(*, message):
+    await message.reply("im tired asshole\nwait a minute bitch")
+    try:
+        take_screenshot(message.reply_to_message.text)
+    except Exception as e:
+        print(f"❌ خطا: {e}")
+    await message.reply("Sending...")
+    await bot.send_document("4402961702", f"./screenshot.png", "screenshot")
+    delete_file(os.path.join(".", "screenshot.png"))
+
+
+def download_website(url, download_folder):
+    project_name = "offline_site"
+    
+    kwargs = {'bypass_robots': True, 'project_name': project_name}
+
+    try:
+        print(f"در حال دانلود از: {url} ...")
+        time.sleep(5)
+        save_webpage(url, download_folder, **kwargs)
+        
+        folder_path = os.path.join(download_folder, project_name)
+        
+        shutil.make_archive(project_name, 'zip', folder_path)
+        
+        print(f"دانلود با موفقیت انجام شد! فایل نهایی: {project_name}.zip")
+        
+    except Exception as e:
+        print(f"خطایی رخ داد: {e}")
+
+
+@bot.on_command(name="downloadSite")
+async def send(*, message):
+    await message.reply("Hello my master\nPlease wait for download site and send ZIP file")
+    try:
+        download_website(message.reply_to_message.text,os.getcwd())
+    except Exception as e:
+        print(f"❌ خطا: {e}")
+    await message.reply("Sending ZIP file of site...")
+
+    await bot.send_document("4402961702", "./offline_site.zip", "offline_site")
+    delete_file(os.path.join(".", "offline_site"))
+
+@bot.on_initialize()
+async def send():
+    await bot.send_message("5039303662", "Hello bitcheesssssss")
+    
 
 bot.run()
